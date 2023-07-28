@@ -17,11 +17,22 @@
 */
 import './worklet-interfaces.js';
 class WhiteNoiseProcessor extends AudioWorkletProcessor {
+    static get parameterDescriptors() {
+        return [
+            {
+                name: "gain",
+                defaultValue: 1,
+                minValue: 0,
+                automationRate: "a-rate",
+            },
+        ];
+    }
     process(inputs, outputs, parameters) {
+        const gainValues = parameters.gain;
         for (const output of outputs) {
             for (const channel of output) {
                 for (let i = 0; i < channel.length; i++) {
-                    channel[i] = Math.random() * 2 - 1;
+                    channel[i] = (Math.random() * 2 - 1) * gainValues[i];
                 }
             }
         }
@@ -29,4 +40,4 @@ class WhiteNoiseProcessor extends AudioWorkletProcessor {
     }
 }
 registerProcessor('white-noise-processor', WhiteNoiseProcessor);
-//# sourceMappingURL=WhiteProcessor.js.map
+//# sourceMappingURL=WhiteNoiseProcessor.js.map

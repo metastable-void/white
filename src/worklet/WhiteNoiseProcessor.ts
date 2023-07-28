@@ -14,44 +14,28 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
- */
-interface AudioWorkletProcessor {
-  readonly port: MessagePort;
-  process(
-    inputs: Float32Array[][],
-    outputs: Float32Array[][],
-    parameters: Record<string, Float32Array>
-  ): boolean;
-}
+*/
 
-declare var AudioWorkletProcessor: {
-  prototype: AudioWorkletProcessor;
-  new (options?: AudioWorkletNodeOptions): AudioWorkletProcessor;
-};
-
-interface AudioParamDescriptor {
-  name: string;
-  automationRate?: 'a-rate' | 'k-rate';
-  minValue?: number;
-  maxValue?: number;
-  defaultValue?: number;
-}
-
-declare function registerProcessor(
-  name: string,
-  processorCtor: (new (
-    options?: AudioWorkletNodeOptions
-  ) => AudioWorkletProcessor) & {
-    parameterDescriptors?: AudioParamDescriptor[];
-  }
-): void;
+import './worklet-interfaces.js';
 
 class WhiteNoiseProcessor extends AudioWorkletProcessor {
+  static get parameterDescriptors(): AudioParamDescriptor[] {
+    return [
+      {
+        name: "gain",
+        defaultValue: 1,
+        minValue: 0,
+        automationRate: "a-rate",
+      },
+    ];
+  }
+
   public override process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean {
+    const gainValues = parameters.gain!;
     for (const output of outputs) {
       for (const channel of output) {
         for (let i = 0; i < channel.length; i++) {
-          channel[i] = Math.random() * 2 - 1;
+          channel[i] = (Math.random() * 2 - 1) * gainValues[i]!;
         }
       }
     }

@@ -15,18 +15,5 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-import './worklet-interfaces.js';
-class WhiteNoiseProcessor extends AudioWorkletProcessor {
-    process(inputs, outputs, parameters) {
-        for (const output of outputs) {
-            for (const channel of output) {
-                for (let i = 0; i < channel.length; i++) {
-                    channel[i] = Math.random() * 2 - 1;
-                }
-            }
-        }
-        return true;
-    }
-}
-registerProcessor('white-noise-processor', WhiteNoiseProcessor);
-//# sourceMappingURL=WhiteProcessor.js.map
+export {};
+//# sourceMappingURL=WhiteNoiseNode.js.map
