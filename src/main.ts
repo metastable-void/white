@@ -16,7 +16,8 @@
   limitations under the License.
 */
 
-
+import './component/PianoKeyboard.js';
+import { PianoKeyboardElement } from './component/PianoKeyboard.js';
 import { SynthesizerBuilder } from "./SynthesizerBuilder.js";
 import { Synthesizer } from "./Synthesizer.js";
 
@@ -25,7 +26,6 @@ let synthesizer: Synthesizer | undefined;
 const modulationLevelInput = document.querySelector('#mod-level') as HTMLInputElement;
 const carrierLevelInput = document.querySelector('#car-level') as HTMLInputElement;
 
-const noteNumberInput = document.querySelector('#note-number') as HTMLInputElement;
 const inputModFreqSlope = document.querySelector('#mod-freq-slope') as HTMLInputElement;
 const inputModFreqIntercept = document.querySelector('#mod-freq-intercept') as HTMLInputElement;
 const inputCarFreqSlope = document.querySelector('#car-freq-slope') as HTMLInputElement;
@@ -45,8 +45,42 @@ const inputCarDecay2Delay = document.querySelector('#car-d2-delay') as HTMLInput
 const inputCarSustainLevel = document.querySelector('#car-s-level') as HTMLInputElement;
 const inputCarReleaseDelay = document.querySelector('#car-r-delay') as HTMLInputElement;
 
+const pianoKeyboard = document.querySelector('#piano-keyboard') as PianoKeyboardElement;
+
+let noteNumber = 69;
+
+const noteNumberChangeHandlers: Array<(noteNumber: number) => void> = [];
+
+const changeNoteNumber = (n: number) => {
+  noteNumber = Math.max(0, Math.min(127, 0|n));
+  noteNumberChangeHandlers.forEach((handler) => handler(noteNumber));
+};
+
+const playHandlers: Array<() => void> = [];
+
+const play = () => {
+  playHandlers.forEach((handler) => handler());
+};
+
+const stopPlayingHandlers: Array<() => void> = [];
+
+const stopPlaying = () => {
+  stopPlayingHandlers.forEach((handler) => handler());
+};
+
+pianoKeyboard.addEventListener('noteon', (ev) => {
+  const noteNumber = (ev as CustomEvent).detail.note;
+  console.log(noteNumber);
+  changeNoteNumber(noteNumber);
+  play();
+});
+
+pianoKeyboard.addEventListener('noteoff', () => {
+  stopPlaying();
+});
+
 const getBaseFrequency = (): number => {
-  const baseFrequency = 440 * Math.pow(2, (noteNumberInput.valueAsNumber - 69) / 12);
+  const baseFrequency = 440 * Math.pow(2, (noteNumber - 69) / 12);
   return baseFrequency;
 };
 
@@ -68,8 +102,6 @@ const getCarrierFrequency = (): number => {
 
 const powerForm = document.querySelector('#form-power') as HTMLFormElement;
 const powerRadio = powerForm.elements.namedItem('power') as RadioNodeList;
-
-const playButton = document.getElementById('play') as HTMLButtonElement;
 
 const turnOn = () => {
   if (!synthesizer) {
@@ -173,26 +205,17 @@ const turnOn = () => {
       fmNode.connect(carrierEnvelope);
       carrierEnvelope.connect(synthesizer.destination);
 
-      playButton.addEventListener('touchstart', (ev) => {
-        ev.preventDefault();
-        ev.stopImmediatePropagation();
-      });
-
-      playButton.addEventListener('pointerdown', (ev) => {
-        ev.preventDefault();
-        ev.stopImmediatePropagation();
+      playHandlers.push(() => {
         modulatorEnvelope.note.value = 1;
         carrierEnvelope.note.value = 1;
       });
 
-      playButton.addEventListener('pointerup', (ev) => {
-        ev.preventDefault();
-        ev.stopImmediatePropagation();
+      stopPlayingHandlers.push(() => {
         modulatorEnvelope.note.value = 0;
         carrierEnvelope.note.value = 0;
       });
 
-      noteNumberInput.addEventListener('change', () => {
+      noteNumberChangeHandlers.push(() => {
         fmNode.frequency.value = getCarrierFrequency();
         modulator.frequency.value = getModulatorFrequency();
       });

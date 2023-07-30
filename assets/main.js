@@ -15,11 +15,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+import './component/PianoKeyboard.js';
 import { SynthesizerBuilder } from "./SynthesizerBuilder.js";
 let synthesizer;
 const modulationLevelInput = document.querySelector('#mod-level');
 const carrierLevelInput = document.querySelector('#car-level');
-const noteNumberInput = document.querySelector('#note-number');
 const inputModFreqSlope = document.querySelector('#mod-freq-slope');
 const inputModFreqIntercept = document.querySelector('#mod-freq-intercept');
 const inputCarFreqSlope = document.querySelector('#car-freq-slope');
@@ -36,8 +36,32 @@ const inputCarBreakpointLevel = document.querySelector('#car-b-level');
 const inputCarDecay2Delay = document.querySelector('#car-d2-delay');
 const inputCarSustainLevel = document.querySelector('#car-s-level');
 const inputCarReleaseDelay = document.querySelector('#car-r-delay');
+const pianoKeyboard = document.querySelector('#piano-keyboard');
+let noteNumber = 69;
+const noteNumberChangeHandlers = [];
+const changeNoteNumber = (n) => {
+    noteNumber = Math.max(0, Math.min(127, 0 | n));
+    noteNumberChangeHandlers.forEach((handler) => handler(noteNumber));
+};
+const playHandlers = [];
+const play = () => {
+    playHandlers.forEach((handler) => handler());
+};
+const stopPlayingHandlers = [];
+const stopPlaying = () => {
+    stopPlayingHandlers.forEach((handler) => handler());
+};
+pianoKeyboard.addEventListener('noteon', (ev) => {
+    const noteNumber = ev.detail.note;
+    console.log(noteNumber);
+    changeNoteNumber(noteNumber);
+    play();
+});
+pianoKeyboard.addEventListener('noteoff', () => {
+    stopPlaying();
+});
 const getBaseFrequency = () => {
-    const baseFrequency = 440 * Math.pow(2, (noteNumberInput.valueAsNumber - 69) / 12);
+    const baseFrequency = 440 * Math.pow(2, (noteNumber - 69) / 12);
     return baseFrequency;
 };
 const getModulatorFrequency = () => {
@@ -56,7 +80,6 @@ const getCarrierFrequency = () => {
 };
 const powerForm = document.querySelector('#form-power');
 const powerRadio = powerForm.elements.namedItem('power');
-const playButton = document.getElementById('play');
 const turnOn = () => {
     if (!synthesizer) {
         const builder = new SynthesizerBuilder();
@@ -128,23 +151,15 @@ const turnOn = () => {
             modulatorEnvelope.connect(fmNode.phaseOffset);
             fmNode.connect(carrierEnvelope);
             carrierEnvelope.connect(synthesizer.destination);
-            playButton.addEventListener('touchstart', (ev) => {
-                ev.preventDefault();
-                ev.stopImmediatePropagation();
-            });
-            playButton.addEventListener('pointerdown', (ev) => {
-                ev.preventDefault();
-                ev.stopImmediatePropagation();
+            playHandlers.push(() => {
                 modulatorEnvelope.note.value = 1;
                 carrierEnvelope.note.value = 1;
             });
-            playButton.addEventListener('pointerup', (ev) => {
-                ev.preventDefault();
-                ev.stopImmediatePropagation();
+            stopPlayingHandlers.push(() => {
                 modulatorEnvelope.note.value = 0;
                 carrierEnvelope.note.value = 0;
             });
-            noteNumberInput.addEventListener('change', () => {
+            noteNumberChangeHandlers.push(() => {
                 fmNode.frequency.value = getCarrierFrequency();
                 modulator.frequency.value = getModulatorFrequency();
             });
