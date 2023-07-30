@@ -35,7 +35,7 @@ class WhiteNoiseProcessor extends AudioWorkletProcessor {
     for (const output of outputs) {
       for (const channel of output) {
         for (let i = 0; i < channel.length; i++) {
-          channel[i] = (Math.random() * 2 - 1) * gainValues[i]!;
+          channel[i] = (Math.random() * 2 - 1) * (gainValues[i] ?? gainValues[0]!);
         }
       }
     }

@@ -85,11 +85,13 @@ const turnOn = () => {
       playButton.addEventListener('mousedown', () => {
         modulatorEnvelope.note.value = 1;
         carrierEnvelope.note.value = 1;
+        console.log('mousedown');
       });
 
       playButton.addEventListener('mouseup', () => {
         modulatorEnvelope.note.value = 0;
         carrierEnvelope.note.value = 0;
+        console.log('mouseup');
       });
 
       noteNumberInput.addEventListener('change', () => {

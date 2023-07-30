@@ -50,10 +50,10 @@ class SineOscillator extends AudioWorkletProcessor {
         const gainValues = parameters.gain;
         const phaseOffsetValues = parameters.phaseOffset;
         for (let i = 0; i < blockSize; i++) {
-            const frequency = frequencyValues[i];
+            const frequency = frequencyValues[i] ?? frequencyValues[0];
             const phaseIncrement = frequency / sampleRate;
             this._phase += phaseIncrement;
-            result[i] = gainValues[i] * Math.sin(this._phase * Math.PI * 2 + phaseOffsetValues[i]);
+            result[i] = (gainValues[i] ?? gainValues[0]) * Math.sin(this._phase * Math.PI * 2 + (phaseOffsetValues[i] ?? phaseOffsetValues[0]));
         }
         for (const output of outputs) {
             for (const channel of output) {

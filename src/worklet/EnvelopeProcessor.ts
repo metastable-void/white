@@ -94,17 +94,23 @@ class EnvelopeProcessor extends AudioWorkletProcessor {
     const releaseDelayValues = parameters.releaseDelay!;
 
     for (let i = 0; i < blockSize; i++) {
-      const isNoteOn = noteValues[i]! >= 0.5;
+      const noteValue = noteValues[i] ?? noteValues[0]!;
+      const attackDelayValue = attackDelayValues[i] ?? attackDelayValues[0]!;
+      const decayDelayValue = decayDelayValues[i] ?? decayDelayValues[0]!;
+      const sustainLevelValue = sustainLevelValues[i] ?? sustainLevelValues[0]!;
+      const releaseDelayValue = releaseDelayValues[i] ?? releaseDelayValues[0]!;
+
+      const isNoteOn = noteValue >= 0.5;
       if (isNoteOn && this._currentState != EnvelopeProcessor.STATE_ATTACK && this._currentState != EnvelopeProcessor.STATE_DECAY && this._currentState != EnvelopeProcessor.STATE_SUSTAIN) {
         this._currentState = EnvelopeProcessor.STATE_ATTACK;
         this._currentStateInitialGain = this._gain;
         this._currentStateSampleCounter = 0;
-        this._currentStateMaxSampleCount = Math.trunc(attackDelayValues[i]! * sampleRate / 1000);
+        this._currentStateMaxSampleCount = Math.trunc(attackDelayValue * sampleRate / 1000);
       } else if (!isNoteOn && this._currentState != EnvelopeProcessor.STATE_OFF && this._currentState != EnvelopeProcessor.STATE_RELEASE) {
         this._currentState = EnvelopeProcessor.STATE_RELEASE;
         this._currentStateInitialGain = this._gain;
         this._currentStateSampleCounter = 0;
-        this._currentStateMaxSampleCount = Math.trunc(releaseDelayValues[i]! * sampleRate / 1000);
+        this._currentStateMaxSampleCount = Math.trunc(releaseDelayValue * sampleRate / 1000);
       }
       switch (this._currentState) {
         case EnvelopeProcessor.STATE_OFF: {
@@ -119,17 +125,17 @@ class EnvelopeProcessor extends AudioWorkletProcessor {
             this._currentState = EnvelopeProcessor.STATE_DECAY;
             this._currentStateInitialGain = 1;
             this._currentStateSampleCounter = 0;
-            this._currentStateMaxSampleCount = Math.trunc(decayDelayValues[i]! * sampleRate / 1000);
+            this._currentStateMaxSampleCount = Math.trunc(decayDelayValue * sampleRate / 1000);
           }
           break;
         }
 
         case EnvelopeProcessor.STATE_DECAY: {
           this._currentStateSampleCounter++;
-          this._gain = this._currentStateInitialGain + (sustainLevelValues[i]! - this._currentStateInitialGain) * this._currentStateSampleCounter / this._currentStateMaxSampleCount!;
+          this._gain = this._currentStateInitialGain + (sustainLevelValue - this._currentStateInitialGain) * this._currentStateSampleCounter / this._currentStateMaxSampleCount!;
           if (this._currentStateSampleCounter >= this._currentStateMaxSampleCount!) {
             this._currentState = EnvelopeProcessor.STATE_SUSTAIN;
-            this._currentStateInitialGain = sustainLevelValues[i]!;
+            this._currentStateInitialGain = sustainLevelValue;
             this._currentStateSampleCounter = 0;
             this._currentStateMaxSampleCount = null;
           }
@@ -137,7 +143,7 @@ class EnvelopeProcessor extends AudioWorkletProcessor {
         }
 
         case EnvelopeProcessor.STATE_SUSTAIN: {
-          this._gain = sustainLevelValues[i]!;
+          this._gain = sustainLevelValue;
           break;
         }
 

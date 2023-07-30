@@ -31,8 +31,16 @@ export class Synthesizer {
     return this.context.destination;
   }
 
+  private createAudioWorkletNode(name: string, options: AudioWorkletNodeOptions | undefined): AudioWorkletNode {
+    const node = new AudioWorkletNode(this.context, name, options);
+    node.onprocessorerror = (ev) => {
+      console.error(ev);
+    };
+    return node;
+  }
+
   public createWhiteNoiseNode(): WhiteNoiseNode {
-    const node = new AudioWorkletNode(this.context, 'white-noise-processor', {
+    const node = this.createAudioWorkletNode('white-noise-processor', {
       numberOfInputs: 0,
       numberOfOutputs: 1,
       outputChannelCount: [1],
@@ -44,7 +52,7 @@ export class Synthesizer {
   }
 
   public createSineOscillatorNode(): SineOscillatorNode {
-    const node = new AudioWorkletNode(this.context, 'sine-oscillator', {
+    const node = this.createAudioWorkletNode('sine-oscillator', {
       numberOfInputs: 0,
       numberOfOutputs: 1,
       outputChannelCount: [1],
@@ -60,7 +68,7 @@ export class Synthesizer {
   }
 
   public createEnvelopeNode(): EnvelopeNode {
-    const node = new AudioWorkletNode(this.context, 'envelope-processor', {
+    const node = this.createAudioWorkletNode('envelope-processor', {
       numberOfInputs: 1,
       numberOfOutputs: 1,
       outputChannelCount: [1],
