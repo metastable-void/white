@@ -33,6 +33,7 @@ export class PianoKeyboardElement extends HTMLElement {
           position: relative;
           padding-block-end: 4em;
           background-color: #333;
+          overflow: auto;
           overflow-block: hidden;
           overflow-inline: scroll;
         }
