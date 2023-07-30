@@ -25,11 +25,15 @@ const inputModFreqIntercept = document.querySelector('#mod-freq-intercept');
 const inputCarFreqSlope = document.querySelector('#car-freq-slope');
 const inputCarFreqIntercept = document.querySelector('#car-freq-intercept');
 const inputModAttackDelay = document.querySelector('#mod-a-delay');
-const inputModDecayDelay = document.querySelector('#mod-d-delay');
+const inputModDecay1Delay = document.querySelector('#mod-d1-delay');
+const inputModBreakpointLevel = document.querySelector('#mod-b-level');
+const inputModDecay2Delay = document.querySelector('#mod-d2-delay');
 const inputModSustainLevel = document.querySelector('#mod-s-level');
 const inputModReleaseDelay = document.querySelector('#mod-r-delay');
 const inputCarAttackDelay = document.querySelector('#car-a-delay');
-const inputCarDecayDelay = document.querySelector('#car-d-delay');
+const inputCarDecay1Delay = document.querySelector('#car-d1-delay');
+const inputCarBreakpointLevel = document.querySelector('#car-b-level');
+const inputCarDecay2Delay = document.querySelector('#car-d2-delay');
 const inputCarSustainLevel = document.querySelector('#car-s-level');
 const inputCarReleaseDelay = document.querySelector('#car-r-delay');
 const getBaseFrequency = () => {
@@ -64,14 +68,22 @@ const turnOn = () => {
             modulationLevelInput.addEventListener('change', () => {
                 modulator.gain.value = modulationLevelInput.valueAsNumber;
             });
-            const modulatorEnvelope = synthesizer.createEnvelopeNode();
+            const modulatorEnvelope = synthesizer.createGainEnvelopeNode();
             modulatorEnvelope.attackDelay.value = inputModAttackDelay.valueAsNumber;
             inputModAttackDelay.addEventListener('change', () => {
                 modulatorEnvelope.attackDelay.value = inputModAttackDelay.valueAsNumber;
             });
-            modulatorEnvelope.decayDelay.value = inputModDecayDelay.valueAsNumber;
-            inputModDecayDelay.addEventListener('change', () => {
-                modulatorEnvelope.decayDelay.value = inputModDecayDelay.valueAsNumber;
+            modulatorEnvelope.decay1Delay.value = inputModDecay1Delay.valueAsNumber;
+            inputModDecay1Delay.addEventListener('change', () => {
+                modulatorEnvelope.decay1Delay.value = inputModDecay1Delay.valueAsNumber;
+            });
+            modulatorEnvelope.breakpointLevel.value = inputModBreakpointLevel.valueAsNumber;
+            inputModBreakpointLevel.addEventListener('change', () => {
+                modulatorEnvelope.breakpointLevel.value = inputModBreakpointLevel.valueAsNumber;
+            });
+            modulatorEnvelope.decay2Delay.value = inputModDecay2Delay.valueAsNumber;
+            inputModDecay2Delay.addEventListener('change', () => {
+                modulatorEnvelope.decay2Delay.value = inputModDecay2Delay.valueAsNumber;
             });
             modulatorEnvelope.sustainLevel.value = inputModSustainLevel.valueAsNumber;
             inputModSustainLevel.addEventListener('change', () => {
@@ -87,14 +99,22 @@ const turnOn = () => {
             carrierLevelInput.addEventListener('change', () => {
                 fmNode.gain.value = carrierLevelInput.valueAsNumber;
             });
-            const carrierEnvelope = synthesizer.createEnvelopeNode();
+            const carrierEnvelope = synthesizer.createGainEnvelopeNode();
             carrierEnvelope.attackDelay.value = inputCarAttackDelay.valueAsNumber;
             inputCarAttackDelay.addEventListener('change', () => {
                 carrierEnvelope.attackDelay.value = inputCarAttackDelay.valueAsNumber;
             });
-            carrierEnvelope.decayDelay.value = inputCarDecayDelay.valueAsNumber;
-            inputCarDecayDelay.addEventListener('change', () => {
-                carrierEnvelope.decayDelay.value = inputCarDecayDelay.valueAsNumber;
+            carrierEnvelope.decay1Delay.value = inputCarDecay1Delay.valueAsNumber;
+            inputCarDecay1Delay.addEventListener('change', () => {
+                carrierEnvelope.decay1Delay.value = inputCarDecay1Delay.valueAsNumber;
+            });
+            carrierEnvelope.breakpointLevel.value = inputCarBreakpointLevel.valueAsNumber;
+            inputCarBreakpointLevel.addEventListener('change', () => {
+                carrierEnvelope.breakpointLevel.value = inputCarBreakpointLevel.valueAsNumber;
+            });
+            carrierEnvelope.decay2Delay.value = inputCarDecay2Delay.valueAsNumber;
+            inputCarDecay2Delay.addEventListener('change', () => {
+                carrierEnvelope.decay2Delay.value = inputCarDecay2Delay.valueAsNumber;
             });
             carrierEnvelope.sustainLevel.value = inputCarSustainLevel.valueAsNumber;
             inputCarSustainLevel.addEventListener('change', () => {

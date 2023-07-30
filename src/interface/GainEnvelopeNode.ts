@@ -16,10 +16,13 @@
   limitations under the License.
 */
 
-export interface EnvelopeNode extends AudioNode {
+export interface GainEnvelopeNode extends AudioNode {
   readonly note: AudioParam;
+  readonly gain: AudioParam;
   readonly attackDelay: AudioParam;
-  readonly decayDelay: AudioParam;
+  readonly decay1Delay: AudioParam;
+  readonly breakpointLevel: AudioParam;
+  readonly decay2Delay: AudioParam;
   readonly sustainLevel: AudioParam;
   readonly releaseDelay: AudioParam;
 }

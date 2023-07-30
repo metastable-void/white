@@ -18,7 +18,7 @@
 
 import { SineOscillatorNode } from "./interface/SineOscillatorNode.js";
 import { WhiteNoiseNode } from "./interface/WhiteNoiseNode.js";
-import { EnvelopeNode } from "./interface/EnvelopeNode.js";
+import { GainEnvelopeNode } from "./interface/GainEnvelopeNode.js";
 
 export class Synthesizer {
   public readonly context: AudioContext;
@@ -67,21 +67,27 @@ export class Synthesizer {
     return node;
   }
 
-  public createEnvelopeNode(): EnvelopeNode {
-    const node = this.createAudioWorkletNode('envelope-processor', {
+  public createGainEnvelopeNode(): GainEnvelopeNode {
+    const node = this.createAudioWorkletNode('gain-envelope-processor', {
       numberOfInputs: 1,
       numberOfOutputs: 1,
       outputChannelCount: [1],
     }) as AudioWorkletNode & {
       note: AudioParam;
+      gain: AudioParam;
       attackDelay: AudioParam;
-      decayDelay: AudioParam;
+      decay1Delay: AudioParam;
+      breakpointLevel: AudioParam;
+      decay2Delay: AudioParam;
       sustainLevel: AudioParam;
       releaseDelay: AudioParam;
     };
     node.note = node.parameters.get('note')!;
+    node.gain = node.parameters.get('gain')!;
     node.attackDelay = node.parameters.get('attackDelay')!;
-    node.decayDelay = node.parameters.get('decayDelay')!;
+    node.decay1Delay = node.parameters.get('decay1Delay')!;
+    node.breakpointLevel = node.parameters.get('breakpointLevel')!;
+    node.decay2Delay = node.parameters.get('decay2Delay')!;
     node.sustainLevel = node.parameters.get('sustainLevel')!;
     node.releaseDelay = node.parameters.get('releaseDelay')!;
     return node;

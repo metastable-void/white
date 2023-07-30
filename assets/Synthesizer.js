@@ -49,15 +49,18 @@ export class Synthesizer {
         node.gain = node.parameters.get('gain');
         return node;
     }
-    createEnvelopeNode() {
-        const node = this.createAudioWorkletNode('envelope-processor', {
+    createGainEnvelopeNode() {
+        const node = this.createAudioWorkletNode('gain-envelope-processor', {
             numberOfInputs: 1,
             numberOfOutputs: 1,
             outputChannelCount: [1],
         });
         node.note = node.parameters.get('note');
+        node.gain = node.parameters.get('gain');
         node.attackDelay = node.parameters.get('attackDelay');
-        node.decayDelay = node.parameters.get('decayDelay');
+        node.decay1Delay = node.parameters.get('decay1Delay');
+        node.breakpointLevel = node.parameters.get('breakpointLevel');
+        node.decay2Delay = node.parameters.get('decay2Delay');
         node.sustainLevel = node.parameters.get('sustainLevel');
         node.releaseDelay = node.parameters.get('releaseDelay');
         return node;

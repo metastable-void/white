@@ -35,7 +35,7 @@ class SynthesizerBuilder {
 SynthesizerBuilder.WORKLET_PATHS = [
     'assets/worklet/WhiteNoiseProcessor.js',
     'assets/worklet/SineOscillator.js',
-    'assets/worklet/EnvelopeProcessor.js',
+    'assets/worklet/GainEnvelopeProcessor.js',
 ];
 export { SynthesizerBuilder };
 //# sourceMappingURL=SynthesizerBuilder.js.map

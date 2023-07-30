@@ -16,11 +16,11 @@
   limitations under the License.
 */
 import './worklet-interfaces.js';
-class EnvelopeProcessor extends AudioWorkletProcessor {
+class GainEnvelopeProcessor extends AudioWorkletProcessor {
     constructor() {
         super(...arguments);
         this._gain = 0;
-        this._currentState = EnvelopeProcessor.STATE_OFF;
+        this._currentState = GainEnvelopeProcessor.STATE_OFF;
         this._currentStateInitialGain = 0;
         this._currentStateSampleCounter = 0;
         this._currentStateMaxSampleCount = null;
@@ -86,6 +86,17 @@ class EnvelopeProcessor extends AudioWorkletProcessor {
     }
     process(inputs, outputs, parameters) {
         const blockSize = outputs[0][0].length;
+        const monoInput = new Float32Array(blockSize);
+        for (const input of inputs) {
+            const channelCount = input.length;
+            for (let i = 0; i < blockSize; i++) {
+                let sum = 0;
+                for (let j = 0; j < channelCount; j++) {
+                    sum += input[j][i];
+                }
+                monoInput[i] = sum / channelCount;
+            }
+        }
         const result = new Float32Array(blockSize);
         const noteValues = parameters.note;
         const gainValues = parameters.gain;
@@ -105,14 +116,14 @@ class EnvelopeProcessor extends AudioWorkletProcessor {
             const sustainLevelValue = sustainLevelValues[i] ?? sustainLevelValues[0];
             const releaseDelayValue = releaseDelayValues[i] ?? releaseDelayValues[0];
             const isNoteOn = noteValue >= 0.5;
-            if (isNoteOn && !EnvelopeProcessor.NOTE_ON_STATES.has(this._currentState)) {
-                this._currentState = EnvelopeProcessor.STATE_ATTACK;
+            if (isNoteOn && !GainEnvelopeProcessor.NOTE_ON_STATES.has(this._currentState)) {
+                this._currentState = GainEnvelopeProcessor.STATE_ATTACK;
                 this._currentStateInitialGain = this._gain;
                 this._currentStateSampleCounter = 0;
                 this._currentStateMaxSampleCount = Math.trunc(attackDelayValue * sampleRate / 1000);
             }
-            else if (!isNoteOn && EnvelopeProcessor.NOTE_ON_STATES.has(this._currentState)) {
-                this._currentState = EnvelopeProcessor.STATE_RELEASE;
+            else if (!isNoteOn && GainEnvelopeProcessor.NOTE_ON_STATES.has(this._currentState)) {
+                this._currentState = GainEnvelopeProcessor.STATE_RELEASE;
                 this._currentStateInitialGain = this._gain;
                 this._currentStateSampleCounter = 0;
                 this._currentStateMaxSampleCount = Math.trunc(releaseDelayValue * sampleRate / 1000);
@@ -122,7 +133,7 @@ class EnvelopeProcessor extends AudioWorkletProcessor {
             };
             const setGainAttack = () => {
                 if (this._currentStateMaxSampleCount === 0) {
-                    this._currentState = EnvelopeProcessor.STATE_DECAY1;
+                    this._currentState = GainEnvelopeProcessor.STATE_DECAY1;
                     this._currentStateInitialGain = 1;
                     this._currentStateSampleCounter = 0;
                     this._currentStateMaxSampleCount = Math.trunc(decay1DelayValue * sampleRate / 1000);
@@ -132,7 +143,7 @@ class EnvelopeProcessor extends AudioWorkletProcessor {
                 this._currentStateSampleCounter++;
                 this._gain = this._currentStateInitialGain + (1 - this._currentStateInitialGain) * this._currentStateSampleCounter / this._currentStateMaxSampleCount;
                 if (this._currentStateSampleCounter >= this._currentStateMaxSampleCount) {
-                    this._currentState = EnvelopeProcessor.STATE_DECAY1;
+                    this._currentState = GainEnvelopeProcessor.STATE_DECAY1;
                     this._currentStateInitialGain = 1;
                     this._currentStateSampleCounter = 0;
                     this._currentStateMaxSampleCount = Math.trunc(decay1DelayValue * sampleRate / 1000);
@@ -140,7 +151,7 @@ class EnvelopeProcessor extends AudioWorkletProcessor {
             };
             const setGainDecay1 = () => {
                 if (this._currentStateMaxSampleCount === 0) {
-                    this._currentState = EnvelopeProcessor.STATE_DECAY2;
+                    this._currentState = GainEnvelopeProcessor.STATE_DECAY2;
                     this._currentStateInitialGain = breakpointLevelValue;
                     this._currentStateSampleCounter = 0;
                     this._currentStateMaxSampleCount = Math.trunc(decay2DelayValue * sampleRate / 1000);
@@ -150,7 +161,7 @@ class EnvelopeProcessor extends AudioWorkletProcessor {
                 this._currentStateSampleCounter++;
                 this._gain = this._currentStateInitialGain + (breakpointLevelValue - this._currentStateInitialGain) * this._currentStateSampleCounter / this._currentStateMaxSampleCount;
                 if (this._currentStateSampleCounter >= this._currentStateMaxSampleCount) {
-                    this._currentState = EnvelopeProcessor.STATE_DECAY2;
+                    this._currentState = GainEnvelopeProcessor.STATE_DECAY2;
                     this._currentStateInitialGain = breakpointLevelValue;
                     this._currentStateSampleCounter = 0;
                     this._currentStateMaxSampleCount = Math.trunc(decay2DelayValue * sampleRate / 1000);
@@ -158,7 +169,7 @@ class EnvelopeProcessor extends AudioWorkletProcessor {
             };
             const setGainDecay2 = () => {
                 if (this._currentStateMaxSampleCount === 0) {
-                    this._currentState = EnvelopeProcessor.STATE_SUSTAIN;
+                    this._currentState = GainEnvelopeProcessor.STATE_SUSTAIN;
                     this._currentStateInitialGain = sustainLevelValue;
                     this._currentStateSampleCounter = 0;
                     this._currentStateMaxSampleCount = null;
@@ -168,7 +179,7 @@ class EnvelopeProcessor extends AudioWorkletProcessor {
                 this._currentStateSampleCounter++;
                 this._gain = this._currentStateInitialGain + (sustainLevelValue - this._currentStateInitialGain) * this._currentStateSampleCounter / this._currentStateMaxSampleCount;
                 if (this._currentStateSampleCounter >= this._currentStateMaxSampleCount) {
-                    this._currentState = EnvelopeProcessor.STATE_SUSTAIN;
+                    this._currentState = GainEnvelopeProcessor.STATE_SUSTAIN;
                     this._currentStateInitialGain = sustainLevelValue;
                     this._currentStateSampleCounter = 0;
                     this._currentStateMaxSampleCount = null;
@@ -179,7 +190,7 @@ class EnvelopeProcessor extends AudioWorkletProcessor {
             };
             const setGainRelease = () => {
                 if (this._currentStateMaxSampleCount === 0) {
-                    this._currentState = EnvelopeProcessor.STATE_OFF;
+                    this._currentState = GainEnvelopeProcessor.STATE_OFF;
                     this._currentStateInitialGain = 0;
                     this._currentStateSampleCounter = 0;
                     this._currentStateMaxSampleCount = null;
@@ -189,39 +200,39 @@ class EnvelopeProcessor extends AudioWorkletProcessor {
                 this._currentStateSampleCounter++;
                 this._gain = this._currentStateInitialGain * (1 - this._currentStateSampleCounter / this._currentStateMaxSampleCount);
                 if (this._currentStateSampleCounter >= this._currentStateMaxSampleCount) {
-                    this._currentState = EnvelopeProcessor.STATE_OFF;
+                    this._currentState = GainEnvelopeProcessor.STATE_OFF;
                     this._currentStateInitialGain = 0;
                     this._currentStateSampleCounter = 0;
                     this._currentStateMaxSampleCount = null;
                 }
             };
             switch (this._currentState) {
-                case EnvelopeProcessor.STATE_OFF: {
+                case GainEnvelopeProcessor.STATE_OFF: {
                     setGainOff();
                     break;
                 }
-                case EnvelopeProcessor.STATE_ATTACK: {
+                case GainEnvelopeProcessor.STATE_ATTACK: {
                     setGainAttack();
                     break;
                 }
-                case EnvelopeProcessor.STATE_DECAY1: {
+                case GainEnvelopeProcessor.STATE_DECAY1: {
                     setGainDecay1();
                     break;
                 }
-                case EnvelopeProcessor.STATE_DECAY2: {
+                case GainEnvelopeProcessor.STATE_DECAY2: {
                     setGainDecay2();
                     break;
                 }
-                case EnvelopeProcessor.STATE_SUSTAIN: {
+                case GainEnvelopeProcessor.STATE_SUSTAIN: {
                     setGainSustain();
                     break;
                 }
-                case EnvelopeProcessor.STATE_RELEASE: {
+                case GainEnvelopeProcessor.STATE_RELEASE: {
                     setGainRelease();
                     break;
                 }
             }
-            result[i] = gainValue * this._gain;
+            result[i] = gainValue * this._gain * monoInput[i];
         }
         for (const output of outputs) {
             for (const channel of output) {
@@ -233,17 +244,17 @@ class EnvelopeProcessor extends AudioWorkletProcessor {
         return true;
     }
 }
-EnvelopeProcessor.STATE_OFF = 0;
-EnvelopeProcessor.STATE_ATTACK = 1;
-EnvelopeProcessor.STATE_DECAY1 = 2;
-EnvelopeProcessor.STATE_DECAY2 = 3;
-EnvelopeProcessor.STATE_SUSTAIN = 4;
-EnvelopeProcessor.STATE_RELEASE = 5;
-EnvelopeProcessor.NOTE_ON_STATES = new Set([
-    EnvelopeProcessor.STATE_ATTACK,
-    EnvelopeProcessor.STATE_DECAY1,
-    EnvelopeProcessor.STATE_DECAY2,
-    EnvelopeProcessor.STATE_SUSTAIN,
+GainEnvelopeProcessor.STATE_OFF = 0;
+GainEnvelopeProcessor.STATE_ATTACK = 1;
+GainEnvelopeProcessor.STATE_DECAY1 = 2;
+GainEnvelopeProcessor.STATE_DECAY2 = 3;
+GainEnvelopeProcessor.STATE_SUSTAIN = 4;
+GainEnvelopeProcessor.STATE_RELEASE = 5;
+GainEnvelopeProcessor.NOTE_ON_STATES = new Set([
+    GainEnvelopeProcessor.STATE_ATTACK,
+    GainEnvelopeProcessor.STATE_DECAY1,
+    GainEnvelopeProcessor.STATE_DECAY2,
+    GainEnvelopeProcessor.STATE_SUSTAIN,
 ]);
-registerProcessor('envelope-processor', EnvelopeProcessor);
-//# sourceMappingURL=EnvelopeProcessor.js.map
+registerProcessor('gain-envelope-processor', GainEnvelopeProcessor);
+//# sourceMappingURL=GainEnvelopeProcessor.js.map

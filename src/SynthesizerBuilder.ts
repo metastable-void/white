@@ -22,7 +22,7 @@ export class SynthesizerBuilder {
   public static readonly WORKLET_PATHS: string[] = [
     'assets/worklet/WhiteNoiseProcessor.js',
     'assets/worklet/SineOscillator.js',
-    'assets/worklet/EnvelopeProcessor.js',
+    'assets/worklet/GainEnvelopeProcessor.js',
   ];
 
   public workletPaths: string[] = SynthesizerBuilder.WORKLET_PATHS;
