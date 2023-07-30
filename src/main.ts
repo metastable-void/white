@@ -22,13 +22,24 @@ import { Synthesizer } from "./Synthesizer.js";
 
 let synthesizer: Synthesizer | undefined;
 
-const modulationLevelInput = document.querySelector('#level') as HTMLInputElement;
+const modulationLevelInput = document.querySelector('#mod-level') as HTMLInputElement;
+const carrierLevelInput = document.querySelector('#car-level') as HTMLInputElement;
 
 const noteNumberInput = document.querySelector('#note-number') as HTMLInputElement;
 const inputModFreqSlope = document.querySelector('#mod-freq-slope') as HTMLInputElement;
 const inputModFreqIntercept = document.querySelector('#mod-freq-intercept') as HTMLInputElement;
 const inputCarFreqSlope = document.querySelector('#car-freq-slope') as HTMLInputElement;
 const inputCarFreqIntercept = document.querySelector('#car-freq-intercept') as HTMLInputElement;
+
+const inputModAttackDelay = document.querySelector('#mod-a-delay') as HTMLInputElement;
+const inputModDecayDelay = document.querySelector('#mod-d-delay') as HTMLInputElement;
+const inputModSustainLevel = document.querySelector('#mod-s-level') as HTMLInputElement;
+const inputModReleaseDelay = document.querySelector('#mod-r-delay') as HTMLInputElement;
+
+const inputCarAttackDelay = document.querySelector('#car-a-delay') as HTMLInputElement;
+const inputCarDecayDelay = document.querySelector('#car-d-delay') as HTMLInputElement;
+const inputCarSustainLevel = document.querySelector('#car-s-level') as HTMLInputElement;
+const inputCarReleaseDelay = document.querySelector('#car-r-delay') as HTMLInputElement;
 
 const getBaseFrequency = (): number => {
   const baseFrequency = 440 * Math.pow(2, (noteNumberInput.valueAsNumber - 69) / 12);
@@ -71,11 +82,63 @@ const turnOn = () => {
       });
 
       const modulatorEnvelope = synthesizer.createEnvelopeNode();
+      modulatorEnvelope.attackDelay.value = inputModAttackDelay.valueAsNumber;
+
+      inputModAttackDelay.addEventListener('change', () => {
+        modulatorEnvelope.attackDelay.value = inputModAttackDelay.valueAsNumber;
+      });
+
+      modulatorEnvelope.decayDelay.value = inputModDecayDelay.valueAsNumber;
+
+      inputModDecayDelay.addEventListener('change', () => {
+        modulatorEnvelope.decayDelay.value = inputModDecayDelay.valueAsNumber;
+      });
+
+      modulatorEnvelope.sustainLevel.value = inputModSustainLevel.valueAsNumber;
+
+      inputModSustainLevel.addEventListener('change', () => {
+        modulatorEnvelope.sustainLevel.value = inputModSustainLevel.valueAsNumber;
+      });
+
+      modulatorEnvelope.releaseDelay.value = inputModReleaseDelay.valueAsNumber;
+
+      inputModReleaseDelay.addEventListener('change', () => {
+        modulatorEnvelope.releaseDelay.value = inputModReleaseDelay.valueAsNumber;
+      });
 
       const fmNode = synthesizer.createSineOscillatorNode();
       fmNode.frequency.value = getCarrierFrequency();
 
+      fmNode.gain.value = carrierLevelInput.valueAsNumber;
+      carrierLevelInput.addEventListener('change', () => {
+        fmNode.gain.value = carrierLevelInput.valueAsNumber;
+      });
+
       const carrierEnvelope = synthesizer.createEnvelopeNode();
+
+      carrierEnvelope.attackDelay.value = inputCarAttackDelay.valueAsNumber;
+
+      inputCarAttackDelay.addEventListener('change', () => {
+        carrierEnvelope.attackDelay.value = inputCarAttackDelay.valueAsNumber;
+      });
+
+      carrierEnvelope.decayDelay.value = inputCarDecayDelay.valueAsNumber;
+
+      inputCarDecayDelay.addEventListener('change', () => {
+        carrierEnvelope.decayDelay.value = inputCarDecayDelay.valueAsNumber;
+      });
+
+      carrierEnvelope.sustainLevel.value = inputCarSustainLevel.valueAsNumber;
+
+      inputCarSustainLevel.addEventListener('change', () => {
+        carrierEnvelope.sustainLevel.value = inputCarSustainLevel.valueAsNumber;
+      });
+
+      carrierEnvelope.releaseDelay.value = inputCarReleaseDelay.valueAsNumber;
+
+      inputCarReleaseDelay.addEventListener('change', () => {
+        carrierEnvelope.releaseDelay.value = inputCarReleaseDelay.valueAsNumber;
+      });
 
       modulator.connect(modulatorEnvelope);
       modulatorEnvelope.connect(fmNode.phaseOffset);

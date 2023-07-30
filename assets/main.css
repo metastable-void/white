@@ -9,6 +9,17 @@ body {
   flex-direction: column;
 }
 
+input, button, select, textarea {
+  font: inherit;
+}
+
 button {
   user-select: none;
+}
+
+#synthesizer {
+  margin-inline: auto;
+  margin-block: 1rem;
+  padding: 1rem;
+  max-inline-size: 40rem;
 }

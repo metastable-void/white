@@ -25,24 +25,64 @@
     <script type='module' src='assets/main.js'></script>
   </head>
   <body>
-    <form id="form-power" autocomplete="off">
-      <label><input type="radio" name="power" value="1"> On</label>
-      <label><input type="radio" name="power" value="0" checked> Off</label>
-    </form>
-    <p>
-      <label>Modulator freq: <input id="mod-freq-slope" type="number" min="1" step="0.01" max="8" value="2">f + <input id="mod-freq-intercept" type="number" min="-10" step="1" max="10" value="0"> [Hz]</label>
-    </p>
-    <p>
-      <label>Modulation level: <input id="level" type="range" min="0" step="0.1" max="10"></label>
-    </p>
-    <p>
-      <label>Carrier freq: <input id="car-freq-slope" type="number" min="1" step="0.01" max="8" value="1">f + <input id="car-freq-intercept" type="number" min="-10" step="1" max="10" value="0"> [Hz]</label>
-    </p>
-    <p>
-      <label>Note number: <input id="note-number" type="range" min="21" step="1" max="108"></label>
-    </p>
-    <p>
-      <button id="play">Play/Pause</button>
-    </p>
+    <div id="synthesizer">
+      <fieldset id="controls-play">
+        <legend>Play</legend>
+        <form id="form-power" autocomplete="off">
+          <label><input type="radio" name="power" value="1"> On</label>
+          <label><input type="radio" name="power" value="0" checked> Off</label>
+        </form>
+        <p>
+          <label>Note number: <input id="note-number" type="range" min="21" step="1" max="108"></label>
+        </p>
+        <p>
+          <button id="play">Play/Pause</button>
+        </p>
+      </fieldset>
+      <fieldset id="controls-modulator">
+        <legend>Modulator</legend>
+        <p>
+          <label>Frequency: <input id="mod-freq-slope" type="number" min="1" step="0.01" max="8" value="2">f + <input id="mod-freq-intercept" type="number" min="-10" step="1" max="10" value="0"> [Hz]</label>
+        </p>
+        <p>
+          <label>Level: <input id="mod-level" type="range" min="0" step="0.1" max="10" value="1"></label>
+        </p>
+        <hr>
+        <p>
+          A delay: <input id="mod-a-delay" type="range" min="0" step="1" max="1000" value="100">
+        </p>
+        <p>
+          D delay: <input id="mod-d-delay" type="range" min="0" step="1" max="1000" value="100">
+        </p>
+        <p>
+          S level: <input id="mod-s-level" type="range" min="0" step="0.1" max="1" value="0.5">
+        </p>
+        <p>
+          R delay: <input id="mod-r-delay" type="range" min="0" step="1" max="1000" value="100">
+        </p>
+      </fieldset>
+      <fieldset id="controls-carrier">
+        <legend>Carrier</legend>
+        <p>
+          <label>Frequency: <input id="car-freq-slope" type="number" min="1" step="0.01" max="8" value="1">f + <input id="car-freq-intercept" type="number" min="-10" step="1" max="10" value="0"> [Hz]</label>
+        </p>
+        <p>
+          <label>Level: <input id="car-level" type="range" min="0" step="0.1" max="10" value="1"></label>
+        </p>
+        <hr>
+        <p>
+          A delay: <input id="car-a-delay" type="range" min="0" step="1" max="1000" value="100">
+        </p>
+        <p>
+          D delay: <input id="car-d-delay" type="range" min="0" step="1" max="1000" value="100">
+        </p>
+        <p>
+          S level: <input id="car-s-level" type="range" min="0" step="0.1" max="1" value="0.5">
+        </p>
+        <p>
+          R delay: <input id="car-r-delay" type="range" min="0" step="1" max="1000" value="100">
+        </p>
+      </fieldset>
+    </div>
   </body>
 </html>
