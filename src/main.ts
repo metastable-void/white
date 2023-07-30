@@ -82,16 +82,23 @@ const turnOn = () => {
       fmNode.connect(carrierEnvelope);
       carrierEnvelope.connect(synthesizer.destination);
 
-      playButton.addEventListener('mousedown', () => {
-        modulatorEnvelope.note.value = 1;
-        carrierEnvelope.note.value = 1;
-        console.log('mousedown');
+      playButton.addEventListener('touchstart', (ev) => {
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
       });
 
-      playButton.addEventListener('mouseup', () => {
+      playButton.addEventListener('pointerdown', (ev) => {
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+        modulatorEnvelope.note.value = 1;
+        carrierEnvelope.note.value = 1;
+      });
+
+      playButton.addEventListener('pointerup', (ev) => {
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
         modulatorEnvelope.note.value = 0;
         carrierEnvelope.note.value = 0;
-        console.log('mouseup');
       });
 
       noteNumberInput.addEventListener('change', () => {
