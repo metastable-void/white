@@ -42,6 +42,8 @@ export class UnitKeyboardAbElement extends HTMLElement {
           border: none;
           appearance: none;
           outline: none !important;
+          user-select: none;
+          touch-action: none;
         }
 
         .black {
@@ -77,6 +79,8 @@ export class UnitKeyboardAbElement extends HTMLElement {
     `;
 
     const buttons: readonly HTMLButtonElement[] = Array.from(this.shadowRoot.querySelectorAll('button'));
+
+    buttons.forEach(n => n.addEventListener('gotpointercapture', e => (e.target! as HTMLElement).releasePointerCapture(e.pointerId)));
 
     this.shadowRoot.addEventListener('touchstart', (event) => {
       event.preventDefault();
