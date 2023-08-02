@@ -40,3 +40,10 @@ button {
   padding: 1rem;
   max-inline-size: 40rem;
 }
+
+#piano-keyboard {
+  position: -webkit-sticky;
+  position: sticky;
+  inset-block-end: 0;
+  box-shadow: 0 0 2em #000;
+}

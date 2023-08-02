@@ -43,6 +43,7 @@ export class PianoKeyboardElement extends HTMLElement {
           overflow: auto;
           overflow-block: hidden;
           overflow-inline: scroll;
+          justify-content: center;
         }
       </style>
     `;

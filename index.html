@@ -25,7 +25,6 @@
     <script type='module' src='assets/main.js'></script>
   </head>
   <body>
-    <piano-keyboard id="piano-keyboard"></piano-keyboard>
     <div id="synthesizer">
       <fieldset id="controls-play">
         <legend>Play</legend>
@@ -33,6 +32,9 @@
           <label><input type="radio" name="power" value="1"> On</label>
           <label><input type="radio" name="power" value="0" checked> Off</label>
         </form>
+        <p>
+          <label>Keyboard size: <input id="keyboard-size" type="range" min="4" step="1" max="16" value="12"></label>
+        </p>
       </fieldset>
       <fieldset id="controls-modulator">
         <legend>Modulator</legend>
@@ -91,5 +93,6 @@
         </p>
       </fieldset>
     </div>
+    <piano-keyboard id="piano-keyboard"></piano-keyboard>
   </body>
 </html>

@@ -37,10 +37,13 @@ export class UnitKeyboardElement extends HTMLElement {
         }
 
         button {
+          font-size: inherit;
           text-indent: -9999px;
           overflow: hidden;
           border: none;
           appearance: none;
+          box-sizing: border-box;
+          padding: 0;
           outline: none !important;
           -webkit-user-select: none;
           user-select: none;
@@ -51,7 +54,7 @@ export class UnitKeyboardElement extends HTMLElement {
           background-color: #000;
           position: absolute;
           inset-block-start: 0;
-          block-size: 4em;
+          block-size: 4rem;
           inline-size: 2.25em;
         }
 
@@ -61,7 +64,7 @@ export class UnitKeyboardElement extends HTMLElement {
 
         .white {
           background-color: #fff;
-          block-size: 8em;
+          block-size: 8rem;
           inline-size: 4em;
           box-shadow: inset 0 0 0 1px #888;
         }

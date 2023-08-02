@@ -36,6 +36,7 @@ const inputCarBreakpointLevel = document.querySelector('#car-b-level');
 const inputCarDecay2Delay = document.querySelector('#car-d2-delay');
 const inputCarSustainLevel = document.querySelector('#car-s-level');
 const inputCarReleaseDelay = document.querySelector('#car-r-delay');
+const inputKeyboardSize = document.querySelector('#keyboard-size');
 const pianoKeyboard = document.querySelector('#piano-keyboard');
 let noteNumber = 69;
 const noteNumberChangeHandlers = [];
@@ -196,5 +197,9 @@ powerRadio.forEach((node) => {
             turnOff();
         }
     });
+});
+pianoKeyboard.style.fontSize = `${inputKeyboardSize.valueAsNumber}px`;
+inputKeyboardSize.addEventListener('change', () => {
+    pianoKeyboard.style.fontSize = `${inputKeyboardSize.valueAsNumber}px`;
 });
 //# sourceMappingURL=main.js.map

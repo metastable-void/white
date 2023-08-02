@@ -45,6 +45,8 @@ const inputCarDecay2Delay = document.querySelector('#car-d2-delay') as HTMLInput
 const inputCarSustainLevel = document.querySelector('#car-s-level') as HTMLInputElement;
 const inputCarReleaseDelay = document.querySelector('#car-r-delay') as HTMLInputElement;
 
+const inputKeyboardSize = document.querySelector('#keyboard-size') as HTMLInputElement;
+
 const pianoKeyboard = document.querySelector('#piano-keyboard') as PianoKeyboardElement;
 
 let noteNumber = 69;
@@ -256,4 +258,10 @@ powerRadio.forEach((node) => {
       turnOff();
     }
   });
+});
+
+pianoKeyboard.style.fontSize = `${inputKeyboardSize.valueAsNumber}px`;
+
+inputKeyboardSize.addEventListener('change', () => {
+  pianoKeyboard.style.fontSize = `${inputKeyboardSize.valueAsNumber}px`;
 });
