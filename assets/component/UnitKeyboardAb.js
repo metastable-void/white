@@ -38,6 +38,7 @@ export class UnitKeyboardAbElement extends HTMLElement {
           border: none;
           appearance: none;
           outline: none !important;
+          -webkit-user-select: none;
           user-select: none;
           touch-action: none;
         }
