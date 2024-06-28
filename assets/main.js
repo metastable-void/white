@@ -55,8 +55,8 @@ const stopPlaying = () => {
 };
 pianoKeyboard.addEventListener('noteon', (ev) => {
     const noteNumber = ev.detail.note;
-    console.log(noteNumber, getBaseFrequency());
     changeNoteNumber(noteNumber);
+    console.log(noteNumber, getBaseFrequency());
     play();
 });
 pianoKeyboard.addEventListener('noteoff', () => {
@@ -66,6 +66,12 @@ const temperamentForm = document.querySelector('#form-temperament');
 const temperamentRadio = temperamentForm.elements.namedItem('temperament');
 const EQUAL_TEMPERAMENT = Temperament.STANDARD_12_TONE_EQUAL_TEMPERAMENT;
 const JUST_INTONATION = Temperament.pythagorean(Temperament.getCustomBaseNote(60, 440));
+temperamentRadio.forEach((node) => {
+    const radio = node;
+    radio.addEventListener('change', () => {
+        changeNoteNumber(noteNumber);
+    });
+});
 const getNoteFrequency = (noteNumber) => {
     if (temperamentRadio.value === 'equal') {
         return EQUAL_TEMPERAMENT.getFrequency(noteNumber);
