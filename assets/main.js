@@ -17,6 +17,7 @@
 */
 import './component/PianoKeyboard.js';
 import { SynthesizerBuilder } from "./SynthesizerBuilder.js";
+import { Temperament } from './processor/Temperament.js';
 let synthesizer;
 const modulationLevelInput = document.querySelector('#mod-level');
 const carrierLevelInput = document.querySelector('#car-level');
@@ -61,8 +62,18 @@ pianoKeyboard.addEventListener('noteon', (ev) => {
 pianoKeyboard.addEventListener('noteoff', () => {
     stopPlaying();
 });
+const temperamentForm = document.querySelector('#form-temperament');
+const temperamentRadio = temperamentForm.elements.namedItem('temperament');
+const EQUAL_TEMPERAMENT = Temperament.STANDARD_12_TONE_EQUAL_TEMPERAMENT;
+const JUST_INTONATION = Temperament.pythagorean(Temperament.getCustomBaseNote(60, 440));
+const getNoteFrequency = (noteNumber) => {
+    if (temperamentRadio.value === 'equal') {
+        return EQUAL_TEMPERAMENT.getFrequency(noteNumber);
+    }
+    return JUST_INTONATION.getFrequency(noteNumber);
+};
 const getBaseFrequency = () => {
-    const baseFrequency = 440 * Math.pow(2, (noteNumber - 69) / 12);
+    const baseFrequency = getNoteFrequency(noteNumber);
     return baseFrequency;
 };
 const getModulatorFrequency = () => {

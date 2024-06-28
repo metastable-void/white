@@ -20,6 +20,7 @@ import './component/PianoKeyboard.js';
 import { PianoKeyboardElement } from './component/PianoKeyboard.js';
 import { SynthesizerBuilder } from "./SynthesizerBuilder.js";
 import { Synthesizer } from "./Synthesizer.js";
+import { Temperament } from './processor/Temperament.js';
 
 let synthesizer: Synthesizer | undefined;
 
@@ -81,8 +82,22 @@ pianoKeyboard.addEventListener('noteoff', () => {
   stopPlaying();
 });
 
+const temperamentForm = document.querySelector('#form-temperament') as HTMLFormElement;
+const temperamentRadio = temperamentForm.elements.namedItem('temperament') as RadioNodeList;
+
+const EQUAL_TEMPERAMENT = Temperament.STANDARD_12_TONE_EQUAL_TEMPERAMENT;
+const JUST_INTONATION = Temperament.pythagorean(Temperament.getCustomBaseNote(60, 440));
+
+const getNoteFrequency = (noteNumber: number): number => {
+  if (temperamentRadio.value === 'equal') {
+    return EQUAL_TEMPERAMENT.getFrequency(noteNumber);
+  }
+
+  return JUST_INTONATION.getFrequency(noteNumber);
+};
+
 const getBaseFrequency = (): number => {
-  const baseFrequency = 440 * Math.pow(2, (noteNumber - 69) / 12);
+  const baseFrequency = getNoteFrequency(noteNumber);
   return baseFrequency;
 };
 
