@@ -55,7 +55,7 @@ const stopPlaying = () => {
 };
 pianoKeyboard.addEventListener('noteon', (ev) => {
     const noteNumber = ev.detail.note;
-    console.log(noteNumber);
+    console.log(noteNumber, getBaseFrequency());
     changeNoteNumber(noteNumber);
     play();
 });
